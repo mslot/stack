@@ -1,0 +1,79 @@
+version: '3'
+services:
+  database-node:
+    image: mariadb:dev
+    environment: 
+    - MYSQL_INITDB_SKIP_TZINFO=yes
+    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    - SERVICE_TYPE=mariadb
+    - DISCOVERY_SERVICE=consul-client-0
+    - SERVICE_PORT=8500
+    - SERVICE_TAGS=db
+    ports:
+    - "3306"
+    - 4567-4568
+    - 4444
+  hazel-cast-server-0:
+    image: hazelcast/hazelcast
+    ports:
+    - 5701:5701
+    environment: 
+    - JAVA_OPTS=-Dhazelcast.local.publicAddress=192.168.1.142:5701
+  hazel-cast-server-1:
+    image: hazelcast/hazelcast
+    ports:
+    - 5702:5701
+    environment: 
+    - JAVA_OPTS=-Dhazelcast.local.publicAddress=192.168.1.142:5702
+  consul-server-0:
+    image: consul
+    command: "agent -server -bootstrap-expect 2 -bind 0.0.0.0 -client 0.0.0.0 -ui"
+    ports: 
+    - "8600/udp"
+    - "8500"
+    - "8300"
+    - "8301"
+    - "8302"
+  consul-server-1:
+    image: consul
+    command: "agent -server -bootstrap-expect 2 -retry-join consul-server-0 -bind 0.0.0.0 -client 0.0.0.0 -ui"
+    ports: 
+    - "8600/udp"
+    - "8500"
+    - "8300"
+    - "8301"
+    - "8302"
+  consul-client-0:
+    image: consul
+    command: "agent -retry-join consul-server-0 -bind 0.0.0.0 -client 0.0.0.0 -ui"
+    ports: 
+    - "8600/udp"
+    - "8500:8500"
+    - "8300"
+    - "8301"
+    - "8302"
+  consul-client-1:
+    image: consul
+    command: "agent -retry-join consul-server-0 -bind 0.0.0.0 -client 0.0.0.0 -ui"
+    ports: 
+    - "8600/udp"
+    - "8501:8500"
+    - "8300"
+    - "8301"
+    - "8302"
+  vault-server-0:
+    image: vault
+    depends_on: 
+      - consul-client-0
+      - consul-client-1
+      - consul-server-0
+      - consul-server-1
+    command: "server -dev"
+    ports:
+    - "127.0.0.1:8220:8200"
+    cap_add: 
+      - IPC_LOCK
+    environment: 
+      - VAULT_ADDR=http://127.0.0.1:8220
+    volumes: 
+    - ./vault_config:/vault/config
