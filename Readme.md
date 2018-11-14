@@ -30,10 +30,30 @@ Go to the root directory (where this readme file is located), and run ```make```
 1. build the MariaDB image
 2. run ```docker-compose```
 
-When running docker-compose I have set some ```sleep``` in between making the server, and the child nodes for the MariaDB. This has to be done because the primary node has to be up and running, AND accepting nodes, before an initial sync to the children can be done. If this is not done, there can happen some funky mistakes :)
+When running docker-compose I have set some ```sleep``` in between making the first node, and the all other nodes for the galera cluster. This has to be done because the primary node has to be up and running, AND accepting nodes, before an initial sync to the children can be done. If this is not done, there will be some funky mistakes.
 
 # MariaDB image
-Because the MariaDB default image does not support clustering out of the box, so I have added a custom entry point that checks if the ```NODE_MODE``` environment variable is set. If it is set, and the /var/lib/mysql/mysql folder is not empty (or does not exists), it creates the mysql folder in the /var/lib/mysql. This has to happen or else the server tries to recreate the database, and this will fail because the data has been copied. For a vanilla setup the error will be something on the line "cant grant all on root user@%". See thw whole script named _mariadb-entrypoint_ in the "MariaDB build/Scripts/" directory.
+If you google "docker mariadb galera" you get a ton of different ways of doing this, but I have settled with the following:
+
+1. before the galera cluster is spun up, i create a consul cluster
+2. every time a database-node is created, consul is consulted (:)) and if there a number is returned, if this is the first node spun up, it is going to be master for the rest
+
+There is a lot of pitfalls here:
+
+1. the creation of the cluster has to be controlled
+2. consul can go down in the creation of the cluster
+
+In the long run I am going to deploy this to a k8s statefulset that ensures me that all nodes is spun up one after the other, so I am sure that the galera nodes are not spun up rapidly. Before creating the galera cluster, k8s has to have the consul cluster ready. Both these choices is by design, with k8s in mind.
+
+I still dont know what will happen if the galera cluster is rebooted. This is an investigation of its own and it is on the top of my todo list.
+
+I still need to address:
+
+1. backup
+2. unsubscribing
+3. what will happen if consul becomes unavailable
+
+Feel welcome to contact me with thoughts on this. I am known as ap5 on #csharp on Freenode.
 
 # WSL and docker
 Remember to map the /mnt/[your_drive] to /[your_drive] so that the docker VM and WSL can work together when mounting volumes! This can be done by editing (if not edited before then just create the file) /etc/wsl.conf adding
@@ -44,3 +64,6 @@ root = /
 ```
 
 Remember to restart WSL. After restart do a ```ls -la /``` and you can now see that what was before mounted on /mnt/c is now mounted on /c. Check out https://blogs.msdn.microsoft.com/commandline/2018/02/07/automatically-configuring-wsl/ for more on this subject.
+
+# Test
+I am currently running some manual test on both Linux and WSL on Windows.
