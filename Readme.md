@@ -1,3 +1,8 @@
+# Status
+This is still pretty alpha. I have not yet tested everything. I am still in the process of getting the galera cluster up with consul. This works with one galera node, and I am in the process of testing it with more nodes. After this is tested, I will move on to add root password rotation with vault. Hereafter I will experiment with hazelcast.
+
+This is a development setup, and on the short sight this is not intended for production. In the long run this is going to be production ready code.
+
 This is a test docker-compose written to facilitate the following:
 
 1. Get an environment up and running where we have a
