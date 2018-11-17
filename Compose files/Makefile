@@ -21,11 +21,15 @@ up-hazelcast:
 	@docker-compose up -d hazel-cast-server-0 hazel-cast-server-1
 
 up-database:
-	docker-compose up -d database-node
+	docker-compose up -d database-node-1
+	sleep 30s
+	docker-compose up -d database-node-2
+	sleep 30s
+	docker-compose up -d database-node-3
 
 down:
 	@echo down
 	@docker-compose down
 
 status:
-	@docker exec `docker ps -q --filter "name=database-node-1"` mysql -e "SHOW GLOBAL STATUS LIKE 'wsrep_cluster_size';" | grep -Eo '[0-9]*' | xargs echo Maria cluster size: 
+	@docker exec `docker ps -q --filter "name=database-node-1_1"` mysql -e "SHOW GLOBAL STATUS LIKE 'wsrep_cluster_size';" | grep -Eo '[0-9]*' | xargs echo Maria cluster size: 

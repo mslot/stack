@@ -1,6 +1,32 @@
 version: '3'
 services:
-  database-node:
+  database-node-1:
+    image: mariadb:dev
+    environment: 
+    - MYSQL_INITDB_SKIP_TZINFO=yes
+    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    - SERVICE_TYPE=mariadb
+    - DISCOVERY_SERVICE=consul-client-0
+    - SERVICE_PORT=8500
+    - SERVICE_TAGS=db
+    ports:
+    - "3306"
+    - 4567-4568
+    - 4444
+  database-node-2:
+    image: mariadb:dev
+    environment: 
+    - MYSQL_INITDB_SKIP_TZINFO=yes
+    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    - SERVICE_TYPE=mariadb
+    - DISCOVERY_SERVICE=consul-client-0
+    - SERVICE_PORT=8500
+    - SERVICE_TAGS=db
+    ports:
+    - "3306"
+    - 4567-4568
+    - 4444
+  database-node-3:
     image: mariadb:dev
     environment: 
     - MYSQL_INITDB_SKIP_TZINFO=yes

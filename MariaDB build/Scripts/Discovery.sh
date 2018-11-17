@@ -36,7 +36,7 @@ function discovery_write_server_config()
     echo "begin to write server config"
     url="http://$1/v1/catalog/service/$2?pretty"
 
-    a=$(curl -s "$url" | jq '.[].Address')
+    a=$(curl -s "$url" | jq '.[].ServiceAddress')
 
     echo "got address: $a"
 
@@ -45,7 +45,7 @@ function discovery_write_server_config()
 
     echo "writing server config"
     mkdir -p /etc/mysql/conf.d
-    sed "s/{{ip}}/$ips/g" /usr/local/bin/server.template.conf > /etc/mysql/conf.d/server.conf #move template.conf to other folder!!
+    sed "s/{{ip}}/$ips/g" /usr/local/bin/server.template.cnf > /etc/mysql/conf.d/server.cnf #move template.conf to other folder!!
     echo "server config written"
 }
 

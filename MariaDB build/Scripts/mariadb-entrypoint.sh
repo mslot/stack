@@ -45,15 +45,17 @@ echo "numbers of services of type $SERVICE_TYPE: $count"
 if [ $count != 0 ]; then
   echo "data dir created"
   mkdir -p /var/lib/mysql/mysql
+  chown -R mysql /var/lib/mysql
+  chgrp -R mysql /var/lib/mysql
 else
   echo "No data dir created"
 fi
 
-if [ $count == 0 ]; then
-  echo "setting environment variable for creating new cluster"
-  export _WSREP_NEW_CLUSTER='--wsrep-new-cluster' 
-fi
-
 discovery_subscribe $discovery_service_url $service_name $SERVICE_TYPE $SERVICE_PORT $SERVICE_TAGS
 discovery_write_server_config $discovery_service_url $SERVICE_TYPE 
-/usr/local/bin/docker-entrypoint.sh "$@"
+
+if [ $count == 0 ]; then
+    /usr/local/bin/docker-entrypoint.sh "$@" --wsrep-new-cluster
+else
+    /usr/local/bin/docker-entrypoint.sh "$@"
+fi
