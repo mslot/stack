@@ -45,7 +45,7 @@ function discovery_write_server_config()
 
     echo "writing server config"
     mkdir -p /etc/mysql/conf.d
-    sed "s/{{ip}}/$ips/g" /usr/local/bin/server.template.cnf > /etc/mysql/conf.d/server.cnf #move template.conf to other folder!!
+    sed "s/{{ip}}/$ips/g" /usr/local/bin/server.template.cnf > /etc/mysql/conf.d/server.cnf #move template.cnf to other folder!!
     echo "server config written"
 }
 

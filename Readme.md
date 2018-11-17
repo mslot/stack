@@ -8,7 +8,7 @@ This is a test docker-compose written to facilitate the following:
 1. Get an environment up and running where we have a
     * cluster of MariaDB
     * cluster of Consul storages and a Vault
-    * cluster of Hazelcast datagrids
+    * cluster of a Hazelcast datagrid
 
 This is done mostly by vanilla images from docker hub, except the MariaDB image, that I had to create myself (actually I have only added a minimal custom entry-point script to create a folder if the NODE_MODE environment variable is set to CHILD).
 
