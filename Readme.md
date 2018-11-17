@@ -20,7 +20,7 @@ Feel free to clone this repo and use as a basis for further development.
 
 # Values to fill out before running docker-compose up
 
-* _#host_ip_ - set this to the local IP address of the host machine when configuring Hazelcast
+Remember to change the local IP to your local IP for the Hazelcast cluster.
 
 Hope you like it.
 
@@ -41,7 +41,7 @@ When running docker-compose I have set some ```sleep``` in between making the fi
 If you google "docker mariadb galera" you get a ton of different ways of doing this, but I have settled with the following:
 
 1. before the galera cluster is spun up, i create a consul cluster
-2. every time a database-node is created, consul is consulted (:)) and if there a number is returned, if this is the first node spun up, it is going to be master for the rest
+2. every time a database-node is created, consul is consulted (:)) and if this is the first node spun up, it is going to be master for the rest
 
 There is a lot of pitfalls here:
 
