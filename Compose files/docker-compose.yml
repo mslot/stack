@@ -4,7 +4,7 @@ services:
     image: mariadb:dev
     environment: 
     - MYSQL_INITDB_SKIP_TZINFO=yes
-    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    - MYSQL_ROOT_PASSWORD=onetimepasswordeoirgj3434oijwgøorigjqw34toi34nhwoh4oin
     - SERVICE_TYPE=mariadb
     - DISCOVERY_SERVICE=consul-client-0
     - SERVICE_PORT=8500
@@ -17,7 +17,7 @@ services:
     image: mariadb:dev
     environment: 
     - MYSQL_INITDB_SKIP_TZINFO=yes
-    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    - MYSQL_ROOT_PASSWORD=onetimepasswordeoirgj3434oijwgøorigjqw34toi34nhwoh4oin
     - SERVICE_TYPE=mariadb
     - DISCOVERY_SERVICE=consul-client-0
     - SERVICE_PORT=8500
@@ -30,7 +30,7 @@ services:
     image: mariadb:dev
     environment: 
     - MYSQL_INITDB_SKIP_TZINFO=yes
-    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    - MYSQL_ROOT_PASSWORD=onetimepasswordeoirgj3434oijwgøorigjqw34toi34nhwoh4oin
     - SERVICE_TYPE=mariadb
     - DISCOVERY_SERVICE=consul-client-0
     - SERVICE_PORT=8500
@@ -102,4 +102,4 @@ services:
     environment: 
       - VAULT_ADDR=http://127.0.0.1:8220
     volumes: 
-    - ./vault_config:/vault/config
+    - ./vault/config:/vault/config
