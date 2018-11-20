@@ -33,7 +33,7 @@ You need:
 Go to the root directory (where this readme file is located), and run ```make```, this will:
 
 1. build the MariaDB image
-2. run `up-all on the makefile from the Compose files directory
+2. run the up-all target from the Compose files directory
 
 The "up-all" runs a series of make targets, with sleeps injected, to give time to certain nodes (database) to come up. When all is up, you shouldnt be able to run "make status". This will give you an error. See the Vault section of this file to see how to rotate some roles, to get a password so you can connect to the MariaDB cluster.
 
