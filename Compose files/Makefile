@@ -19,6 +19,7 @@ add-rotation: build-bootstrap-script
 	docker exec `docker ps -q --filter "name=vault-server-0"` mkdir -p /etc/vault/scripts
 	docker cp vault/scripts/bootstrap-dev.final.sh `docker ps -q --filter "name=vault-server-0"`:/etc/vault/scripts
 	@docker exec `docker ps -q --filter "name=vault-server-0"` /bin/sh /etc/vault/scripts/bootstrap-dev.final.sh
+	@docker exec `docker ps -q --filter "name=vault-server-0"` rm /etc/vault/scripts/bootstrap-dev.final.sh
 
 up-consul:
 	@echo up consul servers
