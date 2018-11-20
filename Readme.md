@@ -1,5 +1,5 @@
 # Status
-This is still pretty alpha. I have not yet tested everything. I am still in the process of getting the galera cluster up with consul. This works with one galera node, and I am in the process of testing it with more nodes. After this is tested, I will move on to add root password rotation with vault. Hereafter I will experiment with hazelcast.
+This is still pretty alpha. For now I have a working Galera cluster, that works together with consul, and root rotation, som two user password rotations.
 
 This is a development setup, and on the short sight this is not intended for production. In the long run this is going to be production ready code.
 
@@ -33,9 +33,42 @@ You need:
 Go to the root directory (where this readme file is located), and run ```make```, this will:
 
 1. build the MariaDB image
-2. run ```docker-compose```
+2. run `up-all on the makefile from the Compose files directory
 
-When running docker-compose I have set some ```sleep``` in between making the first node, and the all other nodes for the galera cluster. This has to be done because the primary node has to be up and running, AND accepting nodes, before an initial sync to the children can be done. If this is not done, there will be some funky mistakes.
+The "up-all" runs a series of make targets, with sleeps injected, to give time to certain nodes (database) to come up. When all is up, you shouldnt be able to run "make status". This will give you an error. See the Vault section of this file to see how to rotate some roles, to get a password so you can connect to the MariaDB cluster.
+
+# Vault
+When calling ```make add-rotation``` a final script is created, and copied to the vault image. After that two roles is created:
+
+1. read-role
+2. update-role
+
+There is also created a root rotation on the root password, which completly renders the intial one time root password useless. Remember that the root token is snatched from the vault logs, and and injected in the final script. This script does not get deleted from the host PC, but is deleted from the docker container. This is meant to be this way because this is a dev setup, and we want to see the output of the built script. If you dont like have it laying around, delete it.
+
+To rotate a password you can connect to the vault container:
+
+```bash
+docker exec `docker ps -q --filter "name=vault-server-0"` -it /bin/sh
+```
+After this you can copy the vault login command from the vault/scripts/bootstrap-dev.final.sh script
+
+```bash
+vault login <root-token>
+```
+
+and rotate the update-role or the read-role
+
+```bash
+vault read database/creds/read-role
+```
+
+or (for the update-role)
+
+```bash
+vault read database/creds/update-role
+```
+
+The password and username is returned and can then be used in the make status target from the Makefile in the Compose files directory. Replace the username and password, and call ```make status again```. This should then report back "Cluster size: 3". If it doesnt do that, there is something wrong with the setup.
 
 # MariaDB image
 If you google "docker mariadb galera" you get a ton of different ways of doing this, but I have settled with the following:

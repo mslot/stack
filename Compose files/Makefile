@@ -4,7 +4,7 @@
 		down status add-root-rotation \
 		build-bootstrap-script
 
-up-all: up-database up-hazelcast add-root-rotation
+up-all: up-consul up-database up-vault up-hazelcast add-rotation
 
 up-vault:
 	@echo up vault

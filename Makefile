@@ -1,6 +1,6 @@
-.PHONY: build-image up status down
+.PHONY: build-mariadb-image up status down
 
-up: build-image
+up-all: build-mariadb-image
 	cd Compose\ files/ && make
 
 build-mariadb-image:
